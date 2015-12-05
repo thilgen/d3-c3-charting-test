@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- Load c3.css -->
+	<link href="c3-0.4.10/c3.css" rel="stylesheet" type="text/css">
+	<!-- Load d3.js and c3.js -->
+	<script src="d3.min.js" charset="utf-8"></script>
+	<script src="c3-0.4.10/c3.min.js"></script>
+	<!-- Load up our custom css for the chart library -->
+	<link href="ct-chart.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<p><span style="font-family:sans-serif">Average Daily Graph (under)</span></p>
+	<div id="charta"></div>
+	<p><span style="font-family:sans-serif">Average Daily Graph (over)</span></p>
+	<div id="chartb"></div>
+</body>
+
+<script>
+
+	function generateChart(id, limit, chartData) {
+
+		// chartData = [["date",value], ["date",value], ...];
+
+		if (0 == chartData.length) {
+			return false;
+		}
+		
+		var dates = [], values = ["data1"];
+		var maxValue = minValue = null;
+		
+		for (var idx in chartData) {
+
+			var pair = chartData[idx];
+			if (2 != pair.length) {
+				return false;
+			}
+
+			var curDate = pair[0];
+			dates.push(curDate);
+
+			var curVal = pair[1];
+			if ((null == minValue) && (null == maxValue)) {
+				minValue = curVal;
+				maxValue = curVal;
+			}
+			if (curVal < minValue) {
+				minValue = curVal;
+			}
+			if (curVal > maxValue) {
+				maxValue = curVal;
+			}
+			values.push(curVal);
+		}
+
+		var chart = c3.generate({
+			bindto: '#'+id,
+			size: {
+				width: 325,
+				height: 100
+			},
+			data: {
+				columns: [values],
+				types: {
+					data1: 'area'
+				}
+			},
+			legend: {
+				show: false
+			},
+			tooltip: {
+				show: true
+			},
+			axis: {
+				y: {
+					min: minValue,
+					max: 10000 + (maxValue > limit ? maxValue : limit),
+					tick: {
+						count: 2,
+						values: [minValue, maxValue > limit ? maxValue : limit]
+					}
+				},
+				x: {
+					show: false,
+				}
+			},
+			grid: {
+				y: {
+					lines: [
+						{
+							value: limit,
+							text:'Plan Limit: ' + limit,
+							position:'middle',
+							class:maxValue > limit ? 'ct-label-over-limit' : 'ct-label-under-limit'
+						}
+					]
+				}
+			},
+			tooltip: {
+				format: {
+					title:	function(x) {
+								return "";
+							},
+					name:	function(name, ratio, id, index) {
+								return dates[index];
+							}
+				}
+			}
+		});
+	};
+
+	chartDataA = [
+		["Dec-01", 400000],
+		["Dec-02", 500000],
+		["Dec-03", 450000],
+		["Dec-04", 550000],
+		["Dec-05", 510000],
+		["Dec-06", 500000],
+		["Dec-07", 575000],
+		["Dec-08", 400000],
+		["Dec-09", 400000]
+	];
+
+	generateChart('charta', 600000, chartDataA);
+
+	chartDataB = [
+		["Dec-01", 250000],
+		["Dec-02", 500000],
+		["Dec-03", 450000],
+		["Dec-04", 550000],
+		["Dec-05", 510000],
+		["Dec-06", 500000],
+		["Dec-07", 575000],
+		["Dec-08", 400000],
+		["Dec-09", 400000],
+		["Dec-10", 500000],
+		["Dec-11", 550000],
+		["Dec-11", 625001]
+	];
+
+	generateChart('chartb', 600000, chartDataB);
+
+</script>
+</html>
