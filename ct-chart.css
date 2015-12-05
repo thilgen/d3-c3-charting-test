@@ -1,0 +1,15 @@
+.ct-label-over-limit {
+  stroke: red;
+}
+
+.ct-label-over-limit line {
+  stroke: red;
+}
+
+.ct-label-under-limit {
+  stroke: green;
+}
+
+.ct-label-under-limit line {
+  stroke: green;
+}
