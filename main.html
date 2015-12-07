@@ -42,6 +42,8 @@
 			dates.push(curDate);
 
 			var curVal = pair[1];
+			values.push(curVal);
+			
 			if ((null == minValue) && (null == maxValue)) {
 				minValue = curVal;
 				maxValue = curVal;
@@ -52,7 +54,6 @@
 			if (curVal > maxValue) {
 				maxValue = curVal;
 			}
-			values.push(curVal);
 		}
 
 		var chart = c3.generate({
